@@ -24,9 +24,6 @@
     <ClCompile Include="Loggersettings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ILogger.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Logger.h">

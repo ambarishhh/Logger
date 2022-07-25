@@ -18,7 +18,7 @@ namespace logger
 	std::mutex Logger::pLoggerLock_;
 
 /***************************************************************************************
-*********************************Logger Constructor*************************************
+*********************************GetLogger*************************************
 ***************************************************************************************/
 
 	ILogger* Logger::GetLogger(LoggerSettings settings)
@@ -29,6 +29,10 @@ namespace logger
 		return pLogger_;
 	}
 
+/***************************************************************************************
+*********************************Logger Constructor*************************************
+***************************************************************************************/
+	
 	Logger::Logger(LoggerSettings settings)
 	{
 		settings_.verbose_ = settings.verbose_.load();
@@ -106,22 +110,7 @@ namespace logger
 
 	void Logger::Warn(std::string message)
 	{
-		std::string actualMessage;
-		if (settings_.timeStamp_)
-		{
-			// Safe way to get current timestamp into string using ctime_s instead of ctime
-			auto time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-			char buffer[30];
-			ctime_s(buffer, sizeof(buffer), &time);
-			actualMessage = buffer;
-		}
-		
-		actualMessage = actualMessage.substr(0, actualMessage.size() - 1) + " WARN : " + message;
-
-		if (settings_.verbose_)
-			PrintLog(actualMessage);
-		std::lock_guard<std::mutex> lg(logDataLock_);
-		logData_.push_back(actualMessage);
+		LogRoutine(message, " WARN : ");
 	}
 
 /***************************************************************************************
@@ -130,22 +119,7 @@ namespace logger
 
 	void Logger::Error(std::string message)
 	{
-		std::string actualMessage;
-		if (settings_.timeStamp_)
-		{
-			// Safe way to get current timestamp into string using ctime_s instead of ctime
-			auto time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-			char buffer[30];
-			ctime_s(buffer, sizeof(buffer), &time);
-			actualMessage = buffer;
-		}
-
-		actualMessage = actualMessage.substr(0, actualMessage.size() - 1) + " ERROR : " + message;
-
-		if (settings_.verbose_)
-			PrintLog(actualMessage);
-		std::lock_guard<std::mutex> lg(logDataLock_);
-		logData_.push_back(actualMessage);
+		LogRoutine(message, " ERROR : ");
 	}
 
 /***************************************************************************************
@@ -154,22 +128,7 @@ namespace logger
 
 	void Logger::Info(std::string message)
 	{
-		std::string actualMessage;
-		if (settings_.timeStamp_)
-		{
-			// Safe way to get current timestamp into string using ctime_s instead of ctime
-			auto time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-			char buffer[30];
-			ctime_s(buffer, sizeof(buffer), &time);
-			actualMessage = buffer;
-		}
-		
-		actualMessage = actualMessage.substr(0, actualMessage.size() - 1) + ' ' + message;
-
-		if (settings_.verbose_)
-			PrintLog(actualMessage);
-		std::lock_guard<std::mutex> lg(logDataLock_);
-		logData_.push_back(actualMessage);
+		LogRoutine(message, " ");
 	}
 
 /***************************************************************************************
@@ -197,7 +156,7 @@ namespace logger
 	}
 
 /***************************************************************************************
-**********************************Flush******************************************
+**********************************Flush*************************************************
 ***************************************************************************************/
 
 	void Logger::Flush()
@@ -205,6 +164,30 @@ namespace logger
 		SaveLogToFile(settings_.GetConsolidatedFilePath());
 		std::lock_guard<std::mutex> lg(logDataLock_);
 		logData_.clear();
+	}
+
+/***************************************************************************************
+**********************************Flush*************************************************
+***************************************************************************************/
+
+	void Logger::LogRoutine(std::string msg, std::string prefix)
+	{
+		std::string actualMessage;
+		if (settings_.timeStamp_)
+		{
+			// Safe way to get current timestamp into string using ctime_s instead of ctime
+			auto time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+			char buffer[30];
+			ctime_s(buffer, sizeof(buffer), &time);
+			actualMessage = buffer;
+		}
+
+		actualMessage = actualMessage.substr(0, actualMessage.size() - 1) + prefix + msg;
+
+		if (settings_.verbose_)
+			PrintLog(actualMessage);
+		std::lock_guard<std::mutex> lg(logDataLock_);
+		logData_.push_back(actualMessage);
 	}
 }
 

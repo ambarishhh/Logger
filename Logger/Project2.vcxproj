@@ -143,7 +143,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ILogger.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="Loggersettings.cpp" />
     <ClCompile Include="main.cpp" />
