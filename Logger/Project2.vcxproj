@@ -143,13 +143,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Logger.cpp" />
+    <ClCompile Include="ConsoleLogger.cpp" />
+    <ClCompile Include="FileLogger.cpp" />
+    <ClCompile Include="LoggerController.cpp" />
     <ClCompile Include="Loggersettings.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ConsoleLogger.h" />
     <ClInclude Include="ILogger.h" />
-    <ClInclude Include="Logger.h" />
+    <ClInclude Include="FileLogger.h" />
+    <ClInclude Include="LoggerController.h" />
     <ClInclude Include="loggersettings.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

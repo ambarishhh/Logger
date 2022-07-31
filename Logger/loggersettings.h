@@ -9,21 +9,24 @@ namespace logger
 	class LoggerSettings
 	{
 	public:
-		LoggerSettings();
-		LoggerSettings(bool verbose, bool timestamp);
-		LoggerSettings(const LoggerSettings& input);
-		void SetConfiguration(bool verbose, bool timestamp);
+		static LoggerSettings* GetSettings();
 		void SetFilePath(std::string filepath);
-		std::string GetConsolidatedFilePath();
 		std::string GetFilePath();
 
-		std::atomic_bool verbose_ = true;
-		std::atomic_bool timeStamp_ = true;
+		std::atomic_bool timeStamp_ = false;
+		std::atomic_bool enableFileLogging_ = true;
+		std::atomic_bool enableConsoleLogging_ = true;
+		std::atomic_bool enableHTTPLogging_ = false;
 
-	private:
+	private:	
+
+		LoggerSettings();
+
 		// default log location
 		std::string filepath_ = "C://temp//log.txt";
-		std::string consolidatedLogFilepath_ = "C://temp//consilidated_log.txt";
 		std::mutex filepathMutex_;
+		static LoggerSettings* settings_;
+		static std::mutex settingsLock_;
+
 	};
 }
